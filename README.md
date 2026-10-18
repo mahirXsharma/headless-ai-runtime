@@ -8,7 +8,9 @@
 - **Tools**:
   - `runTerminalCommand`: Executes native Windows shell commands with automatic timeout handling.
   - `fetchUrl`: Fetches web pages with automatic payload truncation to preserve model context.
-  - `writeFile`: Writes files cleanly with automatic directory creation.
+  - `writeFile`: Writes files cleanly with automatic directory creation and sandboxing.
+  - `readFile`: Safely reads file contents from within the workspace.
+  - `listFiles`: Inspects directory structures and lists files inside the workspace.
 - **Sandboxed Workspace**: File operations and command executions are scoped to `server/workspace/`.
 - **Retro Terminal Interface**: React 19 + Vite frontend styled with JetBrains Mono, auto-scrolling message stream, and animated execution indicators.
 
@@ -19,8 +21,9 @@ flowchart LR
     Browser["Client (React 19 + Vite)<br/>http://localhost:5173"] -- "POST /api/agent" --> Express["Express Server<br/>http://localhost:3000"]
     Express --> AgentLoop["Agent Loop (server/src/agent)"]
     AgentLoop <--> Ollama["Ollama (llama3.1)<br/>http://127.0.0.1:11434"]
-    AgentLoop --> Tools["Tools (runTerminalCommand, fetchUrl, writeFile)"]
-    Tools --> Workspace["Sandbox Workspace<br/>(server/workspace/)"]
+    AgentLoop -- "Calls Tool" --> Tools["Tools (runTerminalCommand, fetchUrl,<br/>writeFile, readFile, listFiles)"]
+    Tools <--> Workspace["Sandbox Workspace<br/>(server/workspace/)"]
+    Tools -- "Feedback Loop<br/>(Tool Output / Results)" --> AgentLoop
 ```
 
 ## Project Structure
