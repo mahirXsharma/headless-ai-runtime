@@ -1,9 +1,13 @@
+/**
+ * Example demonstrating Gemini function calling using the @google/genai SDK.
+ * Dispatches a prompt, intercepts function calls, executes backend tools, and returns the final answer.
+ */
+
 import { GoogleGenAI, Type } from "@google/genai";
 
 const ai = new GoogleGenAI({});
 
-// 1. THIS IS YOUR ACTUAL BACKEND LOGIC (The "Tool")
-// In a real app, this would query your actual MongoDB or an external API.
+// 1. Tool execution logic (e.g. backend server health check)
 function checkServerHealth(serverName) {
   console.log(
     `[BACKEND] Executing local function: checkServerHealth('${serverName}')`,
@@ -14,7 +18,7 @@ function checkServerHealth(serverName) {
   return { status: "HEALTHY", uptime: "120 hours" };
 }
 
-// 2. WE DEFINE THE TOOL SCHEMA TO TEACH THE LLM HOW TO USE IT
+// 2. Tool schema definition
 const serverHealthTool = {
   functionDeclarations: [
     {
@@ -36,7 +40,7 @@ const serverHealthTool = {
   ],
 };
 
-// 3. THE AGENT LOOP
+// 3. Agent execution loop
 export async function agenticChat(userPrompt) {
   console.log(`[LLM] Dispatching prompt to Gemini...`);
 
@@ -46,18 +50,17 @@ export async function agenticChat(userPrompt) {
       model: "gemini-2.5-flash",
       contents: userPrompt,
       config: {
-        tools: [serverHealthTool], // We inject the tool here
+        tools: [serverHealthTool],
         temperature: 0.1,
       },
     });
 
-    // 4. INTERCEPTING THE FUNCTION CALL
+    // 4. Intercept function call and provide response
     if (response.functionCalls && response.functionCalls.length > 0) {
-      const call = response.functionCalls[0]; // Get the first tool the LLM wants to use
+      const call = response.functionCalls[0];
 
       console.log(`[LLM REQUESTED TOOL] ${call.name} with args:`, call.args);
 
-      // Execute our actual local JS logic based on what the LLM asked for
       let backendResult;
       if (call.name === "checkServerHealth") {
         backendResult = checkServerHealth(call.args.serverName);
@@ -65,8 +68,6 @@ export async function agenticChat(userPrompt) {
 
       console.log(`[BACKEND] Returning result to LLM...`, backendResult);
 
-      // Second Call: Give the data back to the LLM so it can formulate a final answer
-      // Note: We have to send the history so it remembers the conversation
       const finalResponse = await ai.models.generateContent({
         model: "gemini-2.5-flash",
         contents: [
@@ -86,7 +87,6 @@ export async function agenticChat(userPrompt) {
       return finalResponse.text;
     }
 
-    // If the LLM didn't need a tool (e.g., user just said "hi"), it returns normal text
     return response.text;
   } catch (error) {
     console.error("[LLM CRASH]", error);

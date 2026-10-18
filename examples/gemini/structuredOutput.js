@@ -1,4 +1,9 @@
-import { GoogleGenAI, Type } from "@google/genai"; // Note the new 'Type' import
+/**
+ * Example demonstrating structured JSON output extraction using the @google/genai SDK.
+ * Forces the model to respond according to a predefined JSON schema with temperature 0.0.
+ */
+
+import { GoogleGenAI, Type } from "@google/genai";
 
 const ai = new GoogleGenAI({});
 
@@ -10,8 +15,8 @@ export async function extractData(unstructuredText) {
       model: "gemini-2.5-flash",
       contents: `Extract the user profile data from this text: ${unstructuredText}`,
       config: {
-        temperature: 0.0, // Absolute zero. No creativity allowed.
-        responseMimeType: "application/json", // Force JSON output
+        temperature: 0.0,
+        responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
           properties: {
@@ -38,7 +43,6 @@ export async function extractData(unstructuredText) {
     });
 
     console.log(`[LLM] Structured data received.`);
-    // The SDK returns a stringified JSON. We parse it back into a real JS object.
     return JSON.parse(response.text);
   } catch (error) {
     console.error("[LLM CRASH] Extraction failed:", error);

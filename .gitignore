@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+.env
+.env.local
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+server/workspace/*
+!server/workspace/.gitkeep

@@ -1,0 +1,233 @@
+.terminal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-color);
+  color: var(--text-green);
+  padding: 1.5rem;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+  user-select: none;
+}
+
+.terminal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.terminal-title h1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-green);
+  text-shadow: 0 0 10px rgba(74, 222, 128, 0.35);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-green);
+  box-shadow: 0 0 8px var(--text-green);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.model-badge {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  background-color: var(--panel-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.terminal-log {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.terminal-log::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-log::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.terminal-log::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.terminal-log::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+}
+
+.terminal-line {
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.line-prefix {
+  user-select: none;
+}
+
+.line-system {
+  color: var(--text-dim);
+}
+
+.line-user {
+  color: var(--text-user);
+}
+
+.line-user .line-prefix {
+  color: var(--text-green);
+  font-weight: 600;
+}
+
+.line-agent {
+  color: var(--text-green);
+}
+
+.line-agent .line-prefix {
+  color: var(--text-dim);
+}
+
+.line-error {
+  color: var(--text-error);
+}
+
+.line-loading {
+  color: var(--text-dim);
+}
+
+.thinking-text {
+  color: var(--text-dim);
+}
+
+.blinking-cursor {
+  color: var(--text-green);
+  font-weight: bold;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.terminal-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--panel-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.terminal-input-bar:focus-within {
+  border-color: var(--text-green);
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.15);
+}
+
+.input-prompt {
+  color: var(--text-green);
+  font-weight: 600;
+  user-select: none;
+}
+
+.terminal-input-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-green);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.terminal-input-bar input::placeholder {
+  color: var(--text-dim);
+}
+
+.terminal-input-bar input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.terminal-input-bar button {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-green);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.terminal-input-bar button:hover:not(:disabled) {
+  background-color: rgba(74, 222, 128, 0.1);
+  border-color: var(--text-green);
+}
+
+.terminal-input-bar button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: var(--border-color);
+}
+
+@media (max-width: 600px) {
+  .terminal-container {
+    padding: 0.75rem;
+  }
+
+  .terminal-title h1 {
+    font-size: 0.95rem;
+  }
+
+  .model-badge {
+    display: none;
+  }
+}

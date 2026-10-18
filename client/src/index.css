@@ -1,0 +1,30 @@
+:root {
+  --bg-color: #0a0a0a;
+  --panel-color: #111111;
+  --border-color: #262626;
+  --text-green: #4ade80;
+  --text-dim: #6b7280;
+  --text-user: #e5e7eb;
+  --text-error: #f87171;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-green);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
