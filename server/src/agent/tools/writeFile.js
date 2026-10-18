@@ -6,13 +6,13 @@ export const schema = {
   type: "function",
   function: {
     name: "writeFile",
-    description: "Writes content to a file path relative to the workspace directory. Automatically creates parent directories.",
+    description: "Writes content to a file path relative to the workspace directory. Automatically creates parent directories. Always organize files under a dedicated subfolder/directory (e.g. 'project-name/file.ext').",
     parameters: {
       type: "object",
       properties: {
         filePath: {
           type: "string",
-          description: "The file path relative to the workspace directory",
+          description: "The relative file path (e.g. 'project-name/index.js' or 'output/result.txt'). Do not prefix with 'workspace/'.",
         },
         content: {
           type: "string",
@@ -26,7 +26,12 @@ export const schema = {
 
 export async function handler({ filePath, content }) {
   try {
-    const targetPath = path.resolve(workspaceDir, filePath);
+    let cleanPath = filePath.trim().replace(/^[\\\/]+/, "").replace(/^\.[\\\/]/, "");
+    if (cleanPath.toLowerCase().startsWith("workspace/") || cleanPath.toLowerCase().startsWith("workspace\\")) {
+      cleanPath = cleanPath.slice("workspace/".length);
+    }
+
+    const targetPath = path.resolve(workspaceDir, cleanPath);
     const rel = path.relative(workspaceDir, targetPath);
 
     if (rel.startsWith("..") || path.isAbsolute(rel)) {
@@ -35,7 +40,7 @@ export async function handler({ filePath, content }) {
 
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
     await fs.writeFile(targetPath, content, "utf8");
-    return `[SUCCESS] File written to ${filePath}`;
+    return `[SUCCESS] File written to ${cleanPath}`;
   } catch (error) {
     return `[ERROR] Failed to write file: ${error.message}`;
   }
